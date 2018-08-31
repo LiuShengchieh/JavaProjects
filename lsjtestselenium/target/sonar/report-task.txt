@@ -1,0 +1,6 @@
+projectKey=lsj.test.selenium:lsj.test.selenium
+serverUrl=http://localhost:9000
+serverVersion=6.7.5.38563
+dashboardUrl=http://localhost:9000/dashboard/index/lsj.test.selenium:lsj.test.selenium
+ceTaskId=AWWKyJseLZDRbvJrCCXn
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AWWKyJseLZDRbvJrCCXn
