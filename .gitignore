@@ -67,3 +67,4 @@ fabric.properties
 
 # 2019/03/19 add .idea
 .idea/
+*.DS_Store
