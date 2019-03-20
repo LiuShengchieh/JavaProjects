@@ -2,9 +2,10 @@ package project.uiautomator.com;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SdkSuppress;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,13 +43,13 @@ public class FlashlightTest {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         mDevice.pressHome();
 
-//        Context context = ApplicationProvider.getApplicationContext();
-//        final Intent intent = context.getPackageManager().getLaunchIntentForPackage(PKG);
-////        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        context.startActivity(intent);
-//
-//        mDevice.wait(Until.hasObject(By.pkg(PKG).depth(0)),
-//                LUANCH_TIMEOUT);
+        Context context = ApplicationProvider.getApplicationContext();
+        final Intent intent = context.getPackageManager().getLaunchIntentForPackage(PKG);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+
+        mDevice.wait(Until.hasObject(By.pkg(PKG).depth(0)),
+                LUANCH_TIMEOUT);
     }
 
     @Test
