@@ -2,20 +2,35 @@ package project.uiautomator.com;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.test.filters.SdkSuppress;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.Build;
+import androidx.test.filters.SdkSuppress;
+import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.IOException;
+
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.*;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
 
@@ -33,30 +48,216 @@ public class FlashlightTest {
 
     private static final String TAG = "project.uiautomator.com";
     private static final String PKG = "com.flashlight.brightest.beacon.torch";
+    private static final String ON = "ON";
+    private static final String OFF = "OFF";
 
-    private static final int LUANCH_TIMEOUT = 5000;
+    private static final int LAUNCH_TIMEOUT = 5000;
 
-    private UiDevice mDevice;
+    private static UiDevice mDevice;
+
+    private String getLauncherPackageName() {
+        // Create launcher Intent
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+
+        // Use PackageManager to get the launcher package name
+        PackageManager pm = getApplicationContext().getPackageManager();
+        ResolveInfo resolveInfo = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return resolveInfo.activityInfo.packageName;
+    }
 
     @Before
     public void startMainActivityFromHomeScreen() {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         mDevice.pressHome();
 
-        Context context = ApplicationProvider.getApplicationContext();
-        final Intent intent = context.getPackageManager().getLaunchIntentForPackage(PKG);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(intent);
+        // Wait for launcher
+        final String launcherPackage = getLauncherPackageName();
+        assertThat(launcherPackage, notNullValue());
+        mDevice.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
+        // Launch a application that name is PKG
+        Context context = getApplicationContext();
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(PKG);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        // Clear out any previous instances
+        context.startActivity(intent);
         mDevice.wait(Until.hasObject(By.pkg(PKG).depth(0)),
-                LUANCH_TIMEOUT);
+                LAUNCH_TIMEOUT);
+    }
+
+    @Ignore
+    public void testTabSwitch_setting() throws UiObjectNotFoundException {
+        // 点击设置tab
+        UiObject settingTab = mDevice.findObject(new UiSelector().
+                className("android.widget.LinearLayout").index(1)).getChild(new UiSelector()
+        .className("android.widget.RelativeLayout").index(3));
+        settingTab.click();
+    }
+
+    @Ignore
+    public void testEnterApplication_news_off() throws UiObjectNotFoundException {
+        // 关闭接收新闻
+        UiObject checkoutBox = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/check_box"));
+        if (checkoutBox.exists() && checkoutBox.isEnabled()) {
+            checkoutBox.click();
+//            checkoutBox.click();
+        }
+
+        // 进入应用
+//        enterApplication();
+
+        // 点击start
+        UiObject startButton = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/btn_start"));
+        if (startButton.exists() && startButton.isEnabled()) {
+            startButton.click();
+            startButton.click();
+        }
+
+        // 关闭权限弹窗
+        UiObject closeDialog = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/dialog_pm_close"));
+        if (closeDialog.exists() && closeDialog.isEnabled()) {
+            closeDialog.click();
+        }
+
+        // 同意权限申请
+        UiObject allowButton = mDevice.findObject(new UiSelector().
+                resourceId("com.sonymobile.cta:id/permission_allow_button"));
+        if (allowButton.exists() && allowButton.isEnabled()) {
+            allowButton.click();
+        }
+
+        // 点击设置tab
+        UiObject settingTab = mDevice.findObject(new UiSelector().
+                className("android.widget.LinearLayout").index(1)).getChild(new UiSelector()
+                .className("android.widget.RelativeLayout").index(3));
+        settingTab.click();
+
+        // 滑动到底部，点击"About feeds"
+        UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true));
+        uiScrollable.scrollIntoView(new UiSelector().text("About feeds"));
+        mDevice.findObject(new UiSelector().text("About feeds")).clickAndWaitForNewWindow();
+
+        // 判断开关关闭状态，预期：OFF
+        UiObject acceptNews = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/cb_setting_check"));
+        assertEquals(OFF, acceptNews.getText());
+    }
+
+    @Ignore
+    public void testEnterApplication_news_on() throws UiObjectNotFoundException {
+//        enterApplication();
+
+        // 点击start
+        UiObject startButton = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/btn_start"));
+        if (startButton.exists() && startButton.isEnabled()) {
+            startButton.click();
+            startButton.click();
+        }
+
+        // 关闭权限弹窗
+        UiObject closeDialog = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/dialog_pm_close"));
+        if (closeDialog.exists() && closeDialog.isEnabled()) {
+            closeDialog.click();
+        }
+
+        // 同意权限申请
+        UiObject allowButton = mDevice.findObject(new UiSelector().
+                resourceId("com.sonymobile.cta:id/permission_allow_button"));
+        if (allowButton.exists() && allowButton.isEnabled()) {
+            allowButton.click();
+        }
+
+        // 点击设置tab
+        UiObject settingTab = mDevice.findObject(new UiSelector().
+                className("android.widget.LinearLayout").index(1)).getChild(new UiSelector()
+                .className("android.widget.RelativeLayout").index(3));
+        settingTab.click();
+
+        // 滑动到底部，点击"About feeds"
+        UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true));
+        uiScrollable.scrollIntoView(new UiSelector().text("About feeds"));
+        mDevice.findObject(new UiSelector().text("About feeds")).clickAndWaitForNewWindow();
+
+        // 判断开关关闭状态，预期：OFF
+        UiObject acceptNews = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/cb_setting_check"));
+        assertEquals(ON, acceptNews.getText());
     }
 
     @Test
-    public void testEnterApplication_news1() throws UiObjectNotFoundException {
-        UiObject startButton = mDevice.findObject(new UiSelector().resourceId("com.flashlight.brightest.beacon.torch:id/btn_start"));
-        if (startButton.exists() && startButton.isEnabled()) {
-            startButton.click();
+    public void testTab1_flashlight_switch() throws UiObjectNotFoundException {
+        // 关闭手电筒
+        UiObject flashlightButton = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/flashlight_btn"));
+        if (flashlightButton.exists() && flashlightButton.isEnabled()) {
+            flashlightButton.click();
+        }
+        File path = new File("/sdcard/flashlight_off.png");
+        mDevice.takeScreenshot(path);
+    }
+
+    @Test
+    public void testTab1_change_skin() throws UiObjectNotFoundException {
+        // 点击皮肤按钮
+        UiObject skinButton = mDevice.findObject(new UiSelector()
+            .resourceId("com.flashlight.brightest.beacon.torch:id/btn_skin_top"));
+        if (skinButton.exists() && skinButton.isEnabled()) {
+            skinButton.click();
+        }
+        // 换肤
+        UiObject skinLinear = mDevice.findObject(new UiSelector().
+                className("android.widget.LinearLayout")).getChild(new UiSelector().
+                className("android.widget.RelativeLayout").index(4));
+        if (skinLinear.exists() && skinLinear.isClickable()) {
+            skinLinear.click();
         }
     }
+
+    public void tearDown() {
+        clearData(PKG);
+    }
+
+    public static void clearData (String packageName) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                InstrumentationRegistry.getInstrumentation().getUiAutomation()
+                        .executeShellCommand("pm clear " + packageName)
+                        .close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void enterApplication() throws UiObjectNotFoundException {
+        // 点击start
+        UiObject startButton = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/btn_start"));
+        if (startButton.exists() && startButton.isEnabled()) {
+            startButton.click();
+            startButton.click();
+        }
+
+        // 关闭权限弹窗
+        UiObject closeDialog = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/dialog_pm_close"));
+        if (closeDialog.exists() && closeDialog.isEnabled()) {
+            closeDialog.click();
+        }
+
+        // 同意权限申请
+        UiObject allowButton = mDevice.findObject(new UiSelector().
+                resourceId("com.sonymobile.cta:id/permission_allow_button"));
+        if (allowButton.exists() && allowButton.isEnabled()) {
+            allowButton.click();
+        }
+    }
+
 }
