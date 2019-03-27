@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -196,9 +197,10 @@ public class FlashlightTest {
         // 关闭手电筒
         UiObject flashlightButton = mDevice.findObject(new UiSelector().
                 resourceId("com.flashlight.brightest.beacon.torch:id/flashlight_btn"));
-        if (flashlightButton.exists() && flashlightButton.isEnabled()) {
-            flashlightButton.click();
-        }
+//        if (flashlightButton.exists() && flashlightButton.isEnabled()) {
+//            flashlightButton.click();
+//        }
+        flashlightButton.click();
         File path = new File("/sdcard/flashlight_off.png");
         mDevice.takeScreenshot(path);
     }
@@ -208,20 +210,39 @@ public class FlashlightTest {
         // 点击皮肤按钮
         UiObject skinButton = mDevice.findObject(new UiSelector()
             .resourceId("com.flashlight.brightest.beacon.torch:id/btn_skin_top"));
-        if (skinButton.exists() && skinButton.isEnabled()) {
-            skinButton.click();
-        }
+//        if (skinButton.exists() && skinButton.isEnabled()) {
+//            skinButton.click();
+//        }
+        skinButton.click();
         // 换肤
         UiObject skinLinear = mDevice.findObject(new UiSelector().
                 className("android.widget.LinearLayout")).getChild(new UiSelector().
-                className("android.widget.RelativeLayout").index(4));
-        if (skinLinear.exists() && skinLinear.isClickable()) {
-            skinLinear.click();
-        }
+                className("android.widget.RelativeLayout").index(5));
+//        if (skinLinear.exists() && skinLinear.isClickable()) {
+//            skinLinear.click();
+//        }
+        skinLinear.click();
     }
 
+    @Test
+    public void testTab1_change_flashlight() throws UiObjectNotFoundException {
+        // 点击手电筒tab
+        tabSwitch(0);
+        // 点击手机屏幕图标
+        UiObject screenButton = mDevice.findObject(new UiSelector().
+                className("android.widget.LinearLayout"));
+        screenButton.click();
+        // 截图
+        mDevice.takeScreenshot(new File("/sdcard/Pictures/Screenshots/changeworld.png"));
+    }
+
+
+    @After
     public void tearDown() {
-        clearData(PKG);
+//        clearData(PKG);
+        for (int i = 0; i < 3; i++) {
+            mDevice.pressBack();
+        }
     }
 
     public static void clearData (String packageName) {
@@ -259,5 +280,15 @@ public class FlashlightTest {
             allowButton.click();
         }
     }
+
+    public void tabSwitch(int tabdex) throws UiObjectNotFoundException {
+        // 0:setting;1:call;2:news;3:setting
+        UiObject tabObject = mDevice.findObject(new UiSelector().
+                className("android.widget.LinearLayout").index(1)).getChild(new UiSelector()
+                .className("android.widget.RelativeLayout").index(tabdex));
+        tabObject.click();
+    }
+
+
 
 }
