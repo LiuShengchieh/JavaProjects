@@ -201,8 +201,9 @@ public class FlashlightTest {
 //            flashlightButton.click();
 //        }
         flashlightButton.click();
-        File path = new File("/sdcard/flashlight_off.png");
-        mDevice.takeScreenshot(path);
+//        File path = new File("/sdcard/flashlight_off.png");
+//        mDevice.takeScreenshot(path);
+        uScreenshot("flashlight_off");
     }
 
     @Test
@@ -233,7 +234,8 @@ public class FlashlightTest {
                 className("android.widget.LinearLayout"));
         screenButton.click();
         // 截图
-        mDevice.takeScreenshot(new File("/sdcard/Pictures/Screenshots/changeworld.png"));
+//        mDevice.takeScreenshot(new File("/sdcard/Pictures/Screenshots/changeworld.png"));
+        uScreenshot("changeworld");
     }
 
 
@@ -289,6 +291,10 @@ public class FlashlightTest {
         tabObject.click();
     }
 
-
+    // 截图方法封装
+    public void uScreenshot(String pngName) {
+        File path = new File("/sdcard/Pictures/Screenshots/" + pngName + ".png");
+        mDevice.takeScreenshot(path);
+    }
 
 }
