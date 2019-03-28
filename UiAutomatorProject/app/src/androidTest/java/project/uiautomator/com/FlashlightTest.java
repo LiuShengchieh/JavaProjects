@@ -248,6 +248,7 @@ public class FlashlightTest {
         // to-do:将截图取出到本地
     }
 
+    // 清空应用数据
     public static void clearData (String packageName) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -260,6 +261,7 @@ public class FlashlightTest {
         }
     }
 
+    // 初次进入应用
     public void enterApplication() throws UiObjectNotFoundException {
         // 点击start
         UiObject startButton = mDevice.findObject(new UiSelector().
@@ -284,6 +286,7 @@ public class FlashlightTest {
         }
     }
 
+    // 切换tab
     public void tabSwitch(int tabdex) throws UiObjectNotFoundException {
         // 0:setting;1:call;2:news;3:setting
         UiObject tabObject = mDevice.findObject(new UiSelector().
@@ -292,7 +295,7 @@ public class FlashlightTest {
         tabObject.click();
     }
 
-    // 截图方法封装
+    // 截图
     public void uScreenshot(String pngName) {
         File path = new File("/sdcard/Pictures/Screenshots/" + pngName + ".png");
         mDevice.takeScreenshot(path);
