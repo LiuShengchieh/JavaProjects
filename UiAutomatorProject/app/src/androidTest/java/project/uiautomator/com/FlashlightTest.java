@@ -245,6 +245,7 @@ public class FlashlightTest {
         for (int i = 0; i < 3; i++) {
             mDevice.pressBack();
         }
+        // to-do:将截图取出到本地
     }
 
     public static void clearData (String packageName) {
