@@ -97,7 +97,7 @@ public class FlashlightTest {
         settingTab.click();
     }
 
-    @Ignore
+    @Test
     public void testEnterApplication_news_off() throws UiObjectNotFoundException {
         // 关闭接收新闻
         UiObject checkoutBox = mDevice.findObject(new UiSelector().
@@ -149,7 +149,7 @@ public class FlashlightTest {
         assertEquals(OFF, acceptNews.getText());
     }
 
-    @Ignore
+    @Test
     public void testEnterApplication_news_on() throws UiObjectNotFoundException {
 //        enterApplication();
 
