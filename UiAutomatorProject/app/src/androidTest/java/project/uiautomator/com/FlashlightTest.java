@@ -1,5 +1,6 @@
 package project.uiautomator.com;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,6 +52,8 @@ public class FlashlightTest {
     private static final String PKG = "com.flashlight.brightest.beacon.torch";
     private static final String ON = "ON";
     private static final String OFF = "OFF";
+
+    private static final String SCREENSHOT_PATH = "/Users/liushengjie/Desktop/screenshot_flashlight/";
 
     private static final int LAUNCH_TIMEOUT = 5000;
 
@@ -318,7 +321,11 @@ public class FlashlightTest {
 
     // 切换tab
     public void tabSwitch(int tabdex) throws UiObjectNotFoundException {
-        // 0:setting;1:call;2:news;3:setting
+        /*0:setting
+          1:call
+          2:news
+          3:setting
+        */
         UiObject tabObject = mDevice.findObject(new UiSelector().
                 className("android.widget.LinearLayout").index(1)).getChild(new UiSelector()
                 .className("android.widget.RelativeLayout").index(tabdex));
@@ -329,6 +336,15 @@ public class FlashlightTest {
     public void uScreenshot(String pngName) {
         File path = new File("/sdcard/Pictures/Screenshots/" + pngName + ".png");
         mDevice.takeScreenshot(path);
+//        uPullScreenshot(pngName);
+    }
+
+    // 将截图pull到指定文件夹
+    // 推测：Test failed to run to completion. Reason: 'Test run failed to complete. Expected 1 tests, received 0'. 由executeShellCommand方法引起
+    public void uPullScreenshot(String png) {
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().
+                executeShellCommand("adb shell pull /sdcard/Pictures/Screenshots/" + png + " "
+                        + SCREENSHOT_PATH);
     }
 
 }
