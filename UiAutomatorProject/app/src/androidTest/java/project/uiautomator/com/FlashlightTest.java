@@ -238,6 +238,34 @@ public class FlashlightTest {
         uScreenshot("changeworld");
     }
 
+    @Test
+    public void testTab2_apply_screen_flash() throws UiObjectNotFoundException {
+        enterApplication();
+        tabSwitch(1);
+        uScreenshot("tab2_screen_flash");
+        UiObject alwaysAllowButton = mDevice.findObject(new UiSelector().
+                resourceId("com.sonymobile.cta:id/permission_allow_button"));
+        if (alwaysAllowButton.exists() && alwaysAllowButton.isClickable()) {
+            alwaysAllowButton.click();
+            alwaysAllowButton.click();
+        }
+        // 点击第二个caller
+        UiObject gridView = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/style_gridview")).
+                getChild(new UiSelector().className("android.widget.RelativeLayout").index(1));
+        gridView.click();
+        // 打开cool screen flash
+        UiObject laterButton = mDevice.findObject(new UiSelector().
+                resourceId("android:id/button2"));
+        laterButton.click();
+        // 点击apply
+        UiObject applyButton = mDevice.findObject(new UiSelector().
+                resourceId("com.flashlight.brightest.beacon.torch:id/tvApply"));
+        applyButton.click();
+        // 截图
+        uScreenshot("tab2_apply_screen_flash");
+    }
+
     @After
     public void tearDown() {
 //        clearData(PKG);
