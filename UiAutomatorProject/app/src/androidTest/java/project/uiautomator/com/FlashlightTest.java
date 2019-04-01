@@ -97,7 +97,7 @@ public class FlashlightTest {
         settingTab.click();
     }
 
-    @Test
+    @Ignore
     public void testEnterApplication_news_off() throws UiObjectNotFoundException {
         // 关闭接收新闻
         UiObject checkoutBox = mDevice.findObject(new UiSelector().
@@ -149,7 +149,7 @@ public class FlashlightTest {
         assertEquals(OFF, acceptNews.getText());
     }
 
-    @Test
+    @Ignore
     public void testEnterApplication_news_on() throws UiObjectNotFoundException {
 //        enterApplication();
 
@@ -192,7 +192,7 @@ public class FlashlightTest {
         assertEquals(ON, acceptNews.getText());
     }
 
-    @Test
+    @Ignore
     public void testTab1_flashlight_switch() throws UiObjectNotFoundException {
         // 关闭手电筒
         UiObject flashlightButton = mDevice.findObject(new UiSelector().
@@ -206,7 +206,7 @@ public class FlashlightTest {
         uScreenshot("flashlight_off");
     }
 
-    @Test
+    @Ignore
     public void testTab1_change_skin() throws UiObjectNotFoundException {
         // 点击皮肤按钮
         UiObject skinButton = mDevice.findObject(new UiSelector()
@@ -225,7 +225,7 @@ public class FlashlightTest {
         skinLinear.click();
     }
 
-    @Test
+    @Ignore
     public void testTab1_change_flashlight() throws UiObjectNotFoundException {
         // 点击手电筒tab
         tabSwitch(0);
@@ -237,7 +237,6 @@ public class FlashlightTest {
 //        mDevice.takeScreenshot(new File("/sdcard/Pictures/Screenshots/changeworld.png"));
         uScreenshot("changeworld");
     }
-
 
     @After
     public void tearDown() {
@@ -268,13 +267,16 @@ public class FlashlightTest {
                 resourceId("com.flashlight.brightest.beacon.torch:id/btn_start"));
         if (startButton.exists() && startButton.isEnabled()) {
             startButton.click();
-            startButton.click();
+//            startButton.click();
         }
 
         // 关闭权限弹窗
         UiObject closeDialog = mDevice.findObject(new UiSelector().
                 resourceId("com.flashlight.brightest.beacon.torch:id/dialog_pm_close"));
         if (closeDialog.exists() && closeDialog.isEnabled()) {
+            closeDialog.click();
+        } else {
+            startButton.click();
             closeDialog.click();
         }
 
